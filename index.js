@@ -66,6 +66,32 @@ app.delete("/product/delete/:id",async(req,res)=>{
 
 });
 
+//get product by id
+app.get("/product/details/:id",async(req,res)=>{
+    //extract product id from req params
+    const productId = req.params.id;
+
+    //should be a valid mango id
+    const isValidIdProductId = mongoose.isValidObjectId(productId);
+
+    //if not valid object id throw error
+    if(!isValidIdProductId){
+        return res.status(400).send({message:"Invalid product id"});
+    }
+
+    //find product
+    const product = await Product.findOne({_id:productId});
+
+    //if no product, throw error
+    if(!product){
+        return res.status(404).send({message:"Product not found"});
+    }
+
+    //send response
+    return res.status(200).send({message:"success",product:product});
+
+});
+
 
 //network port
 const PORT=8000;
